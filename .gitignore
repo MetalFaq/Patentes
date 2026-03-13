@@ -1,0 +1,10 @@
+.env
+data/index/*.sqlite
+data/logs/*
+.venv/
+src/patentes_agent.egg-info/
+__pycache__/
+*.pyc
+data/session_store.json
+data/conversations.jsonl
+data/webex_adapter/*.sqlite

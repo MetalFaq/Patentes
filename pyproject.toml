@@ -1,0 +1,29 @@
+# NOTA: Metadatos del proyecto y dependencias del agente de patentes.
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "patentes-agent"
+version = "0.1.0"
+description = "Agente para seguro de patentes usando Google ADK."
+requires-python = ">=3.10"
+dependencies = [
+    "google-adk>=1.22.0",
+    "google-genai>=1.57.0",
+    "fastapi>=0.123.0",
+    "uvicorn>=0.40.0",
+    "python-dotenv>=1.0.0",
+    "pydantic>=2.0.0",
+    "pypdf>=6.0.0",
+    "httpx>=0.28.1",
+]
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pyright]
+typeCheckingMode = "basic"

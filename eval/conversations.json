@@ -1,0 +1,65 @@
+{
+  "_docstring": "Casos de evaluacion para el agente de patentes. Manten este archivo corto y enfocado.",
+  "cases": [
+    {
+      "input": "Buscá el dominio ILD070 y pasame el link del PDF",
+      "expectation": "Debe usar buscar_patente (modo exacto) y devolver link + pagina si hay coincidencia."
+    },
+    {
+      "input": "Necesito los datos del seguro del dominio IJB108",
+      "expectation": "Debe responder en español y con datos de poliza/certificado si estan disponibles."
+    },
+    {
+      "input": "Mostrame la poliza y certificado del dominio ADE018",
+      "expectation": "Debe devolver poliza y certificado si el indice los tiene."
+    },
+    {
+      "input": "Que informacion tenes para el dominio AC348SV?",
+      "expectation": "Debe usar buscar_patente y devolver link + pagina si hay coincidencia."
+    },
+    {
+      "input": "Buscá el dominio AD472QA y devolveme el documento",
+      "expectation": "Debe responder con document_link y pagina."
+    },
+    {
+      "input": "Quiero el detalle del seguro del dominio AD978NA",
+      "expectation": "Debe devolver datos del seguro y link."
+    },
+    {
+      "input": "Consultá el dominio NDN786",
+      "expectation": "Debe devolver resultado si el dominio existe."
+    },
+    {
+      "input": "Buscá el dominio AE721WY y decime si existe en el indice",
+      "expectation": "Debe indicar si hay coincidencias y devolver link si existe."
+    },
+    {
+      "input": "Necesito el link y pagina del dominio AC687HI",
+      "expectation": "Debe devolver document_link con #page."
+    },
+    {
+      "input": "Mostrame los datos completos del dominio AD414GG",
+      "expectation": "Debe devolver campos disponibles y link."
+    },
+    {
+      "input": "Listame dominios que empiecen con AD",
+      "expectation": "Debe usar buscar_patente con modo prefijo y listar coincidencias."
+    },
+    {
+      "input": "Mostrame dominios que empiecen con AC",
+      "expectation": "Debe usar buscar_patente con modo prefijo y listar coincidencias."
+    },
+    {
+      "input": "Buscá dominios que contengan 87",
+      "expectation": "Debe usar buscar_patente con modo contiene y aclarar coincidencias parciales."
+    },
+    {
+      "input": "Dominios que contengan 70",
+      "expectation": "Debe usar buscar_patente con modo contiene y aclarar coincidencias parciales."
+    },
+    {
+      "input": "Listame dominios que empiecen con AE",
+      "expectation": "Debe usar buscar_patente con modo prefijo y listar coincidencias."
+    }
+  ]
+}
