@@ -2,6 +2,7 @@
 
 Instrucciones:
 - Centraliza todas las llamadas a Webex y al backend Patentes.
+- Resuelve la parte HTTP del webhook: leer mensaje real desde Webex y publicar la respuesta.
 - Registra tiempos, metodo, ruta y codigo HTTP sin imprimir secretos.
 - Devuelve errores claros para que el handler responda con 5xx/4xx adecuados.
 """

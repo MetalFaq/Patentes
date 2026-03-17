@@ -3,6 +3,8 @@
 Instrucciones:
 - Resuelve el flujo completo mensaje Webex -> POST /chat -> respuesta markdown.
 - Aplica deduplicacion antes de llamar al backend.
+- Mapea `personId` y `roomId` al esquema conversacional del backend Patentes.
+- Asume que el webhook ya llego correctamente; si nunca se invoca este flujo, revisar reachability publica del endpoint.
 - Registra informacion suficiente para diagnostico sin exponer secretos.
 """
 

@@ -4,6 +4,7 @@ Instrucciones:
 - Usa SQLite para evitar duplicados entre reinicios del proceso.
 - Deduplica por `message_id` y mantiene un estado `processing` / `processed` / `ignored`.
 - Libera la marca si el procesamiento falla para permitir reintentos.
+- La ruta del store se configura con `WEBEX_DEDUPE_STORE`.
 """
 
 from __future__ import annotations

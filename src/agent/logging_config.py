@@ -1,8 +1,9 @@
 """Configuracion centralizada de registro para el agente de patentes.
 
 Instrucciones:
-- Escribir registros en data/logs/ con rotacion por tamanio.
+- Escribir registros de aplicacion en `data/logs/` con rotacion por tamanio.
 - Separar registros generales y de error.
+- Mantener un canal especifico para errores y warnings de indexado.
 - No reconfigurar manejadores si ya existen (evita duplicados).
 - Usar esta configuracion en scripts y en el inicio de la API.
 """
@@ -20,9 +21,12 @@ def setup_logging() -> None:
     """Configura registro con rotacion y archivos separados.
 
     Crea:
-    - patentes_agent.log (INFO)
-    - patentes_agent.error.log (ERROR)
-    - patentes_agent.index_errors.log (WARNING, errores de indexado)
+    - `patentes_agent.log`: actividad general del sistema
+    - `patentes_agent.error.log`: errores y excepciones
+    - `patentes_agent.index_errors.log`: warnings/errores del logger `agent.index`
+
+    No crea logs opcionales de proceso como `api.local.err.log`; esos archivos
+    solo existen cuando `uvicorn` o el tunel se levantan con redireccion externa.
     """
     root_logger = logging.getLogger()
 

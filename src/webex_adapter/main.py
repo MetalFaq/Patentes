@@ -3,6 +3,8 @@
 Instrucciones:
 - Este servicio solo resuelve transporte Webex -> backend Patentes.
 - No duplica la logica del agente ni accede directamente al indice SQLite.
+- Expone `/webex/webhook` para recibir eventos desde una URL publica o un tunel.
+- Su prueba end-to-end requiere reachability publica real; si eso falla, la UI local sigue siendo el modo de validacion del agente.
 - Mantene healthcheck, webhook y arranque bien definidos.
 """
 

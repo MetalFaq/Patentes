@@ -7,6 +7,12 @@ Webex se integra como canal principal mediante un adaptador separado en
 `src/webex_adapter`, mientras que la UI web de `http://localhost:8000/ui`
 se mantiene como modo de prueba para desarrollo.
 
+Estado actual de pruebas:
+- la UI web local sigue siendo la superficie de prueba confiable
+- Webex ya esta integrado a nivel de codigo
+- la validacion end-to-end por webhook depende de reachability publica real
+- con VPN/proxy corporativo un tunel temporal puede no ser suficiente
+
 ## Arquitectura operativa
 
 - Webex user -> Bot Webex
@@ -20,9 +26,20 @@ se mantiene como modo de prueba para desarrollo.
 - `src/agent`: logica del agente, instrucciones, herramientas y memoria
 - `src/api`: API FastAPI del backend del agente
 - `src/webex_adapter`: adaptador HTTP/Webex basado en webhooks
+- `doc`: notas operativas y plan de migracion a produccion
 - `scripts`: utilidades (indexado, chat por consola, inspeccion)
 - `data/index`: base SQLite generada
 - `eval`: casos de prueba
+
+Documentacion ampliada:
+- `doc/ARQUITECTURA_GENERAL.md`
+- `doc/ENDPOINTS_PUBLICOS_ESTABLES.md`
+- `doc/LOGS_Y_OBSERVABILIDAD.md`
+- `doc/REQUERIMIENTO_TECNICO_INFRAESTRUCTURA.md`
+- `doc/TUNEL_PUBLICO.md`
+- `doc/WEBEX_WEBHOOK.md`
+- `doc/PRUEBA_END_TO_END.md`
+- `doc/MIGRACION_PRODUCCION.md`
 
 ## Preparacion del entorno
 
@@ -196,12 +213,30 @@ Invoke-RestMethod -Method Get -Uri "http://localhost:8010/webex/health"
 ```
 
 4. Expone `http://localhost:8010` mediante un tunel HTTPS publico (por ejemplo,
-   `cloudflared`, `ngrok` o equivalente corporativo).
+   `cloudflared`, `ngrok`, `localhost.run` o equivalente corporativo).
+
+Ejemplo minimo con `localhost.run`:
+
+```powershell
+ssh -o StrictHostKeyChecking=no -o ServerAliveInterval=60 -o ExitOnForwardFailure=yes -R 80:localhost:8010 nokey@localhost.run
+```
+
+La salida mostrara una URL `https://...` temporal para registrar el webhook.
 5. Configura el webhook de Webex apuntando a:
 
 ```
 https://<tu-url-publica>/webex/webhook
 ```
+
+Si queres entender por que hace falta un tunel y como funciona una URL publica
+temporal, revisa `doc/TUNEL_PUBLICO.md`.
+Si queres la teoria y practica del webhook, revisa `doc/WEBEX_WEBHOOK.md`.
+Para el circuito completo de prueba, revisa `doc/PRUEBA_END_TO_END.md`.
+Ese documento ya consolida en un solo lugar los 10 pasos exactos para correr
+una prueba real de Webex end-to-end.
+Si la prueba falla por reachability publica, la superficie vigente para validar
+el agente sigue siendo `http://localhost:8000/ui` hasta contar con un endpoint
+estable o una red sin interferencia sobre el webhook.
 
 Requisitos operativos del adaptador:
 - procesa solo eventos `messages.created`
@@ -256,6 +291,16 @@ Estas rutas y archivos te permiten verificar el funcionamiento del agente y del 
 - Dedupe de eventos Webex: `data/webex_adapter/webex_events.sqlite`
 - Base del indice: `data/index/patentes.sqlite`
 
+Significado rapido:
+- `patentes_agent.log`: actividad general del backend, agente, indexado y adaptador
+- `patentes_agent.error.log`: solo errores y excepciones
+- `patentes_agent.index_errors.log`: problemas de lectura/indexado de PDFs
+- `conversations.jsonl`: transcript funcional, no log tecnico
+- `session_store.json`: estado de sesion, no log tecnico
+- `webex_events.sqlite`: deduplicacion Webex, no log tecnico
+
+Si queres el detalle completo de cada archivo, revisa `doc/LOGS_Y_OBSERVABILIDAD.md`.
+
 Comandos utiles:
 
 ```powershell
@@ -273,6 +318,13 @@ En produccion, separa al menos dos servicios:
 - adaptador Webex (`webex_adapter.main:app`)
 
 El indexado no debe correr al iniciar el backend de chat. Genera el indice en un job previo.
+
+Para el detalle de cambios necesarios al migrar a produccion, revisa:
+- `doc/README.md`
+- `doc/ENDPOINTS_PUBLICOS_ESTABLES.md`
+- `doc/REQUERIMIENTO_TECNICO_INFRAESTRUCTURA.md`
+- `doc/MIGRACION_PRODUCCION.md`
+- `doc/WEBEX_WEBHOOK.md`
 
 ## Notas
 

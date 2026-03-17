@@ -3,6 +3,8 @@
 Instrucciones:
 - Verifica la firma HMAC si hay secreto configurado.
 - Valida el payload antes de delegar a `service.py`.
+- Este modulo es el primer punto de entrada de eventos llegados por webhook publico.
+- Si no llegan eventos hasta aqui, el problema suele estar en la reachability del endpoint y no en la logica del agente.
 - Mantene este modulo centrado en transporte, no en logica del agente.
 """
 
