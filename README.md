@@ -29,6 +29,8 @@ Estado actual de pruebas:
 - `doc`: notas operativas y plan de migracion a produccion
 - `scripts`: utilidades (indexado, chat por consola, inspeccion)
 - `data/index`: base SQLite generada
+- `data/logs`: logs locales y archivos de salida de procesos
+- `data/webex_adapter`: persistencia tecnica del adaptador Webex
 - `eval`: casos de prueba
 
 Documentacion ampliada:
