@@ -15,6 +15,8 @@ hacia uno productivo.
 - `MIGRACION_PRODUCCION.md`: cambios de arquitectura, red, secretos y persistencia para salir de `localhost`.
 - `WEBEX_WEBHOOK.md`: pasos concretos para crear y operar el webhook de Webex.
 - `PRUEBA_END_TO_END.md`: circuito completo de prueba local con backend, adaptador, tunel y mensaje real.
+- `SHAREPOINT_INTEGRACION.md`: arquitectura, smoke tests GET, sync incremental y referencias oficiales para Graph.
+- `SHAREPOINT_OPERACION_Y_COSTOS.md`: frecuencia recomendada, telemetria de sync, polling incremental y camino a triggers reales.
 
 ## Alcance
 
@@ -31,6 +33,9 @@ Estos documentos cubren:
 - pedido formal de infraestructura con fundamentos tecnicos
 - gestion de secretos
 - persistencia de `WEBEX_DEDUPE_STORE`, sesiones y transcript
+- integracion SharePoint con certificado PFX, mirror local y estrategia incremental
+- operacion SharePoint por polling incremental, metricas de requests/bytes y costo tecnico
+- scheduler incremental local para ejecutar el polling sin solapamientos
 
 Varios documentos incluyen diagramas en formato Mermaid para explicar el flujo
 de datos y la operacion completa del sistema.

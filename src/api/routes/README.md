@@ -22,8 +22,9 @@ valida entradas y delega la logica al paquete `src/agent`.
 - El texto devuelto puede incluir markdown con links a PDFs.
 
 ### `docs.py`
-- Resuelve rutas seguras dentro de la carpeta fuente.
+- Resuelve rutas seguras dentro de la fuente activa del proyecto.
 - Devuelve el PDF solicitado con `FileResponse`.
+- En modo SharePoint sirve desde `data/sharepoint_cache`.
 
 ### `ui.py`
 - Interfaz web simple para conversar con el agente.

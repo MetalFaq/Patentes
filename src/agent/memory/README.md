@@ -24,8 +24,11 @@ Su objetivo es almacenar y recuperar informacion sin depender del modelo.
 - Devuelve coincidencias con enlace a documento y pagina.
 - Indica si la coincidencia es exacta, prefijo, contiene o subcadena (modo fuzzy).
 - Expone `dominio_label` y paginas asociadas a etiquetas (`label_pages`).
+- Puede trabajar sobre fuente local o sobre el mirror local de SharePoint.
+- Hace prune de documentos ausentes cuando recorre la fuente completa sin limites.
 - Registra errores de extraccion en `data/logs/patentes_agent.index_errors.log`.
 - Registra tiempos por PDF y tiempo total de cada corrida de indexado.
+- Si `pypdf` falla en una pagina puntual, registra el warning y continua con el resto de la corrida.
 
 ### `short_term.py`
 - Administra sesiones de usuario en memoria con respaldo en disco.

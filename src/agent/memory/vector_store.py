@@ -11,6 +11,7 @@ Instrucciones:
 - El modo fuzzy es opcional y solo se usa bajo pedido explicito.
 - Expone paginas de etiquetas mediante get_label_pages().
 - Registra tiempo total de indexado y tiempos por PDF (logs + salida JSON).
+- Puede indexar una fuente local o un mirror/cache local sincronizado desde SharePoint.
 """
 
 from dataclasses import dataclass
@@ -22,6 +23,8 @@ import sqlite3
 import urllib.parse
 import time
 from typing import Dict, List, Optional
+
+from agent.config import active_source_dir, load_settings
 
 try:
     from pypdf import PdfReader
@@ -71,16 +74,16 @@ def is_valid_plate(value: str) -> bool:
 def build_file_link(path: Path, page_number: int) -> str:
     """Construye un enlace HTTP al PDF con pagina.
 
-    Usa DOCS_BASE_URL y una ruta relativa a la fuente.
+    Usa DOCS_BASE_URL y una ruta relativa a la fuente activa
+    (`PATENTES_SOURCE_DIR` local o cache SharePoint).
     """
     base_url = os.getenv("DOCS_BASE_URL", "http://localhost:8000").rstrip("/")
-    source_env = os.getenv("PATENTES_SOURCE_DIR")
+    source_root = active_source_dir(load_settings())
     rel_path = path.name
-    if source_env:
-        try:
-            rel_path = str(path.resolve().relative_to(Path(source_env).resolve()))
-        except ValueError:
-            rel_path = path.name
+    try:
+        rel_path = str(path.resolve().relative_to(source_root.resolve()))
+    except ValueError:
+        rel_path = path.name
     rel_path = rel_path.replace("\\", "/")
     rel_path = urllib.parse.quote(rel_path)
     return f"{base_url}/docs/{rel_path}#page={page_number}"
@@ -353,15 +356,18 @@ class PlateIndex:
         max_pages_per_pdf: Optional[int] = None,
         site: Optional[str] = None,
         log_every: int = 10,
+        pdf_paths: Optional[List[Path]] = None,
     ) -> dict:
         """Indexa todos los PDFs del directorio fuente en SQLite.
 
         Usa limites opcionales para pruebas rapidas, loguea progreso y
         saltea paginas que fallen en la extraccion de texto.
         Tambien devuelve trazabilidad de tiempos (total y por PDF).
+        Cuando `pdf_paths` se informa, indexa solo esos archivos y no prunea
+        documentos ausentes en otras carpetas.
         """
         base_dir = self.source_dir
-        if site:
+        if site and pdf_paths is None:
             candidate = (self.source_dir / site).resolve()
             try:
                 candidate.relative_to(self.source_dir.resolve())
@@ -383,7 +389,11 @@ class PlateIndex:
             "pdf_timings": [],
         }
 
-        pdf_paths = sorted(base_dir.rglob("*.pdf"))
+        selected_pdf_paths = (
+            sorted(Path(path).resolve() for path in pdf_paths)
+            if pdf_paths is not None
+            else sorted(base_dir.rglob("*.pdf"))
+        )
         processed = 0
         total_start = time.perf_counter()
 
@@ -391,7 +401,26 @@ class PlateIndex:
             self._ensure_schema(conn)
             cursor = conn.cursor()
 
-            for pdf_path in pdf_paths:
+            if site is None and limit is None and pdf_paths is None:
+                current_paths = {str(path.resolve()) for path in selected_pdf_paths}
+                indexed_paths = {
+                    row[0]
+                    for row in cursor.execute(
+                        "SELECT doc_path FROM documents"
+                    ).fetchall()
+                }
+                stale_paths = indexed_paths - current_paths
+                for stale_path in stale_paths:
+                    cursor.execute("DELETE FROM pages WHERE doc_path = ?", (stale_path,))
+                    cursor.execute("DELETE FROM plate_hits WHERE doc_path = ?", (stale_path,))
+                    cursor.execute("DELETE FROM documents WHERE doc_path = ?", (stale_path,))
+                if stale_paths:
+                    logger.info(
+                        "Prune de documentos ausentes completado | eliminados=%s",
+                        len(stale_paths),
+                    )
+
+            for pdf_path in selected_pdf_paths:
                 if limit is not None and processed >= limit:
                     break
 

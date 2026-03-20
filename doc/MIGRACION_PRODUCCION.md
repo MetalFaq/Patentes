@@ -82,6 +82,12 @@ Secretos minimos:
 - `GOOGLE_API_KEY`
 - `WEBEX_BOT_TOKEN`
 - `WEBEX_WEBHOOK_SECRET`
+- credenciales SharePoint (`client_id`, certificado y passphrase)
+
+Para SharePoint en produccion:
+- no conviene distribuir el `.pfx` como archivo local dentro del deployment
+- conviene mover certificado y passphrase a `Key Vault` o secret store equivalente
+- queda abierto evaluar `PEM + thumbprint` o carga del PFX desde vault, segun la plataforma
 
 ## Persistencia que hoy es local
 
@@ -110,6 +116,16 @@ Tambien hay que revisar:
 
 Si las instancias reinician o escalan, esos archivos locales no garantizan continuidad.
 
+### Mirror SharePoint
+
+Tambien hay que decidir:
+
+- si `data/sharepoint_cache` vive en volumen persistente
+- si el scheduler corre dentro del mismo servicio o como job separado
+- si el sync incremental se dispara por polling programado o, mas adelante, por change notifications de Graph
+
+En la etapa actual, el camino recomendado sigue siendo polling incremental mas reconciliacion diaria.
+
 ## Topologia recomendada
 
 Separar dos servicios:
@@ -132,6 +148,9 @@ Flujo:
 - [ ] `PATENTES_API_BASE_URL` actualizado
 - [ ] webhook de Webex creado con la URL publica real
 - [ ] `WEBEX_WEBHOOK_SECRET` cargado en el runtime
+- [ ] credenciales SharePoint movidas a vault/secret store
+- [ ] scheduler de mirror SharePoint definido (cada 10 min, sin solapamiento)
+- [ ] alertas de throttling o corrida larga para SharePoint
 - [ ] `WEBEX_DEDUPE_STORE` persistente o reemplazado
 - [ ] sesiones/transcripts revisados para persistencia real
 - [ ] logs centralizados

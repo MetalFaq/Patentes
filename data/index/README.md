@@ -3,10 +3,13 @@
 
 Este directorio almacena el indice SQLite generado por `scripts/index_patentes.py`.
 El indice existe para no leer todos los PDFs en cada consulta del agente.
+La fuente puede ser local (`PATENTES_SOURCE_DIR`) o un mirror local sincronizado
+desde SharePoint (`data/sharepoint_cache`).
 
 ## Como se genera `patentes.sqlite`
 
-1. El archivo `scripts/index_patentes.py` recorre los PDFs en `PATENTES_SOURCE_DIR`.
+1. El archivo `scripts/index_patentes.py` recorre los PDFs en la fuente activa.
+1. Si `PATENTES_SOURCE_MODE=sharepoint`, primero sincroniza SharePoint a `data/sharepoint_cache`.
 1. Extrae texto por pagina con `pypdf`.
 1. Prioriza coincidencias etiquetadas como `DOMINIO:`, `PATENTE:`, `MATRICULA:` o `PLACA:` y extrae el primer dominio valido del texto etiquetado.
 1. Si no hay etiquetas, usa patrones de respaldo para detectar dominios.
@@ -17,6 +20,7 @@ Trazabilidad de tiempos:
 - Cada corrida guarda tiempo total en `index_time_seconds`.
 - Cada PDF queda registrado en `pdf_timings[]` con estado, paginas, hits y segundos.
 - Los mismos datos se registran en `data/logs/patentes_agent.log`.
+- Si la fuente es SharePoint, la salida incluye `sharepoint_sync.telemetry` con requests, descargas y bytes.
 
 Opciones utiles:
 - `--force`: reindexa todo aunque no haya cambios.
@@ -61,6 +65,7 @@ Notas:
 ## Consejos
 
 - Para reindexar todo: `python scripts/index_patentes.py --force`
+- Para validar SharePoint antes del indexado: `python scripts/sharepoint_probe.py --site-info`
 - Para medir tiempos: revisar `index_time_seconds` y `pdf_timings` en la salida JSON.
 - Para usar un indice alternativo, configura `PATENTES_INDEX_DB`.
 - Para ver coincidencias exactas y por subcadena: `python scripts/inspect_db.py --plate ABC123`

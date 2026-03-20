@@ -1,5 +1,6 @@
 .env
 data/index/*.sqlite
+data/index/*.sqlite-*
 data/logs/*
 !data/logs/README.md
 .venv/
@@ -10,3 +11,6 @@ data/session_store.json
 data/conversations.jsonl
 data/webex_adapter/*.sqlite
 !data/webex_adapter/README.md
+data/sharepoint_cache/*
+!data/sharepoint_cache/README.md
+Certificado/*

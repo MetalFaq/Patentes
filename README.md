@@ -12,6 +12,7 @@ Estado actual de pruebas:
 - Webex ya esta integrado a nivel de codigo
 - la validacion end-to-end por webhook depende de reachability publica real
 - con VPN/proxy corporativo un tunel temporal puede no ser suficiente
+- SharePoint queda soportado como fuente via mirror/cache local incremental
 
 ## Arquitectura operativa
 
@@ -31,6 +32,7 @@ Estado actual de pruebas:
 - `data/index`: base SQLite generada
 - `data/logs`: logs locales y archivos de salida de procesos
 - `data/webex_adapter`: persistencia tecnica del adaptador Webex
+- `data/sharepoint_cache`: mirror local sincronizado desde SharePoint
 - `eval`: casos de prueba
 
 Documentacion ampliada:
@@ -42,13 +44,16 @@ Documentacion ampliada:
 - `doc/WEBEX_WEBHOOK.md`
 - `doc/PRUEBA_END_TO_END.md`
 - `doc/MIGRACION_PRODUCCION.md`
+- `doc/SHAREPOINT_INTEGRACION.md`
+- `doc/SHAREPOINT_OPERACION_Y_COSTOS.md`
 
 ## Preparacion del entorno
 
 1. Copia `.env.example` a `.env`.
 2. Completa `GOOGLE_API_KEY`.
 3. Si vas a usar Webex, completa tambien `WEBEX_BOT_TOKEN` y `WEBEX_WEBHOOK_SECRET`.
-4. Instala el proyecto en modo editable para poder ejecutar `uvicorn api.main:app`
+4. Si vas a usar SharePoint, completa tambien las variables `SHAREPOINT_*` y `PATENTES_SOURCE_MODE=sharepoint`.
+5. Instala el proyecto en modo editable para poder ejecutar `uvicorn api.main:app`
    y `uvicorn webex_adapter.main:app` sin depender de `PYTHONPATH`:
 
 ```powershell
@@ -61,7 +66,7 @@ Alternativa de diagnostico (no recomendada como configuracion estable):
 $env:PYTHONPATH=".\src"
 ```
 
-5. Activa el entorno virtual, por ejemplo:
+6. Activa el entorno virtual, por ejemplo:
 
 ```powershell
 .\venv_patentes_agent\Scripts\Activate.ps1
@@ -89,6 +94,7 @@ Remove-Item Env:PATENTES_API_BASE_URL -ErrorAction SilentlyContinue
 Backend Patentes:
 - `GOOGLE_API_KEY`
 - `APP_NAME`
+- `PATENTES_SOURCE_MODE`
 - `PATENTES_SOURCE_DIR`
 - `PATENTES_INDEX_DB`
 - `PATENTES_SESSION_STORE`
@@ -107,6 +113,23 @@ Adaptador Webex:
 - `WEBEX_DEDUPE_STORE`
 - `WEBEX_DEDUPE_TTL_HOURS`
 - `WEBEX_ALLOWED_ROOM_TYPES`
+
+SharePoint:
+- `SHAREPOINT_TENANT_ID`
+- `SHAREPOINT_CLIENT_ID`
+- `SHAREPOINT_SITE_URL`
+- `SHAREPOINT_LIBRARY_NAME`
+- `SHAREPOINT_FOLDER_PATH`
+- `SHAREPOINT_CERT_THUMBPRINT`
+- `SHAREPOINT_CERT_PFX_PATH`
+- `SHAREPOINT_CERT_PFX_PASSWORD`
+- `SHAREPOINT_CACHE_DIR`
+- `SHAREPOINT_REQUEST_TIMEOUT_SECONDS`
+- `SHAREPOINT_GRAPH_BASE_URL`
+- `SHAREPOINT_SYNC_INTERVAL_MINUTES`
+- `SHAREPOINT_SYNC_WINDOW_START`
+- `SHAREPOINT_SYNC_WINDOW_END`
+- `SHAREPOINT_SYNC_WEEKDAYS`
 
 ## Indexado de PDFs (local)
 
@@ -127,6 +150,7 @@ Notas del indexado:
 - Solo se insertan dominios validos (formatos `AAA999` o `AA999AA`).
 - Errores de extraccion se registran en `data/logs/patentes_agent.index_errors.log`.
 - El indexado registra tiempos por PDF y tiempo total en logs y en la salida JSON (`pdf_timings`, `index_time_seconds`).
+- Si `PATENTES_SOURCE_MODE=sharepoint`, primero sincroniza SharePoint a `data/sharepoint_cache`.
 
 Medicion de tiempos del indexado:
 
@@ -139,6 +163,64 @@ La salida JSON incluye:
 - `pdf_timings[]`: detalle por PDF (ruta, estado, paginas, hits y segundos).
 
 Tambien queda trazabilidad en `data/logs/patentes_agent.log` con una linea por PDF y una linea final de resumen.
+
+## SharePoint como fuente
+
+La integracion SharePoint sigue este flujo:
+
+1. autenticacion contra Microsoft Graph con certificado PFX
+2. validaciones GET (`site`, `drives`, `children`)
+3. descarga incremental a `data/sharepoint_cache`
+4. indexado local del mirror/cache
+
+Puntos operativos importantes:
+- Microsoft Graph no se mide por "tokens" como una API LLM; conviene mirar requests, descargas, bytes y throttling.
+- Cada sync expone `sharepoint_sync.telemetry` con requests Graph, descargas, bytes descargados y reuse del cache.
+- La recomendacion actual es polling incremental cada `10 minutos` entre `08:00` y `17:00`.
+- `last_modified`/`etag` hacen incremental por polling; si mas adelante se quiere un trigger real, hay que sumar change notifications de Graph y un endpoint publico.
+- El proyecto ya incluye `scripts/sharepoint_scheduler.py` para ejecutar ese polling incremental sin solapamientos.
+
+Configuracion minima:
+
+```powershell
+$env:PATENTES_SOURCE_MODE="sharepoint"
+$env:SHAREPOINT_SITE_URL="https://arcorgroup.sharepoint.com/sites/GC_CORP_InfraestructurayComunicacionesTI"
+$env:SHAREPOINT_LIBRARY_NAME="Shared Documents"
+$env:SHAREPOINT_FOLDER_PATH="31 - IA y Automatizaciones/Agente Patente (Google)/Fuente de Datos"
+```
+
+Smoke tests recomendados:
+
+```powershell
+python scripts/sharepoint_probe.py --site-info
+python scripts/sharepoint_probe.py --list-drives
+python scripts/sharepoint_probe.py --list-folder
+python scripts/sharepoint_probe.py --download-one
+```
+
+Sincronizacion e indexado:
+
+```powershell
+python scripts/index_patentes.py --force
+```
+
+Scheduler incremental:
+
+```powershell
+python scripts/sharepoint_scheduler.py --once
+```
+
+Modo continuo local:
+
+```powershell
+python scripts/sharepoint_scheduler.py
+```
+
+Documentacion detallada:
+- `doc/SHAREPOINT_INTEGRACION.md`
+- `doc/SHAREPOINT_OPERACION_Y_COSTOS.md`
+- `src/agent/sources/README.md`
+- `data/sharepoint_cache/README.md`
 
 Override temporal (solo para esta ejecucion):
 

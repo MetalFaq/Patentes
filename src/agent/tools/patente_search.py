@@ -9,7 +9,7 @@ Instrucciones:
 
 from typing import Dict, List
 
-from agent.config import load_settings
+from agent.config import active_source_dir, load_settings
 from agent.debug_trace import append_trace
 from agent.memory.vector_store import PlateIndex, normalize_plate
 
@@ -18,11 +18,15 @@ _INDEX: PlateIndex | None = None
 
 
 def _get_index() -> PlateIndex:
-    """Inicializa el indice en memoria si aun no existe."""
+    """Inicializa el indice en memoria si aun no existe.
+
+    Si la fuente activa es SharePoint, el indice trabaja sobre el cache local
+    sincronizado previamente.
+    """
     global _INDEX
     if _INDEX is None:
         settings = load_settings()
-        _INDEX = PlateIndex(settings.index_db, settings.source_dir)
+        _INDEX = PlateIndex(settings.index_db, active_source_dir(settings))
     return _INDEX
 
 

@@ -16,6 +16,7 @@ El agente se mantiene agnostico del canal. Hoy puede ser consumido por:
 - `core/`: orquestacion del agente, esquemas y ayudas de ejecucion.
 - `memory/`: almacenamiento y acceso al indice SQLite, sesiones y transcripcion.
 - `prompts/`: instrucciones del agente (sistema, politicas, herramientas).
+- `sources/`: conectores externos previos al indexado (hoy SharePoint).
 - `tools/`: funciones expuestas al agente para buscar patentes.
 - Archivos raiz: configuracion, registro y exportaciones del paquete.
 
@@ -23,7 +24,8 @@ El agente se mantiene agnostico del canal. Hoy puede ser consumido por:
 
 ### Archivos raiz
 - `__init__.py`: exporta ayudas principales del agente.
-- `config.py`: carga `.env`, valida variables y resuelve rutas por defecto.
+- `config.py`: carga `.env`, valida variables, define la fuente activa y resuelve rutas por defecto.
+- `config.py`: tambien define parametros de polling incremental para SharePoint.
 - `logging_config.py`: configura registro centralizado, rotacion y log de indexado.
 - `debug_trace.py`: almacena trazas tecnicas de herramientas para `/chat_debug`.
 
@@ -46,6 +48,10 @@ El agente se mantiene agnostico del canal. Hoy puede ser consumido por:
 - `policies.md`: reglas y limites de comportamiento.
 - `tools.md`: especificacion de herramientas disponibles.
 
+### `sources/`
+- `__init__.py`: descripcion del paquete.
+- `sharepoint_client.py`: autenticacion Graph con certificado PFX, listado de archivos, sync incremental a cache local y telemetria de requests/bytes.
+
 ### `tools/`
 - `__init__.py`: lineamientos para herramientas del agente.
 - `base.py`: tipos comunes para resultados de herramientas.
@@ -56,6 +62,7 @@ El agente se mantiene agnostico del canal. Hoy puede ser consumido por:
 - Mantene `.env` fuera de git y usa `.env.example` sin secretos.
 - Si cambias el indice, reejecuta `scripts/index_patentes.py`.
 - Usa `DOCS_BASE_URL` para que los enlaces apunten a la API correcta.
+- Si `PATENTES_SOURCE_MODE=sharepoint`, el backend sirve PDFs desde `data/sharepoint_cache`.
 - Al agregar campos en el indice, actualiza `schemas.py` y `tools.md`.
 - Evita agregar logica de negocio en `memory/` o `tools/` sin documentarla.
 - Si agregas nuevas herramientas, actualiza las instrucciones y los casos de eval.

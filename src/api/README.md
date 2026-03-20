@@ -33,7 +33,7 @@ La API es el backend unico del agente y hoy es consumida por:
 
 ### `routes/`
 - `chat.py`: rutas POST `/chat` y `/chat_debug`.
-- `docs.py`: ruta GET `/docs/{rel_path}` para servir PDFs.
+- `docs.py`: ruta GET `/docs/{rel_path}` para servir PDFs desde la fuente activa.
 - `ui.py`: ruta GET `/ui` con interfaz web de pruebas.
 - `__init__.py`: lineamientos para mantener rutas simples.
   - `chat_debug` devuelve trazas tecnicas de herramientas (no razonamiento interno).
@@ -51,5 +51,6 @@ La API es el backend unico del agente y hoy es consumida por:
 - No agregues logica de negocio en las rutas.
 - Si cambias los esquemas, avisa a los clientes.
 - Usa `DOCS_BASE_URL` para enlaces correctos en entornos remotos.
+- `/docs` debe seguir la fuente activa: local o mirror SharePoint.
 - Mantene el interceptor simple para no afectar el rendimiento.
 - Usa el campo opcional `channel` para trazabilidad del origen si el cliente lo conoce.

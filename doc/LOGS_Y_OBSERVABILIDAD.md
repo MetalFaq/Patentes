@@ -25,6 +25,7 @@ En este proyecto existen tres grupos:
 | `data/session_store.json` | estado de sesion | servicio de sesiones | mantener continuidad conversacional entre requests |
 | `data/webex_adapter/webex_events.sqlite` | persistencia tecnica | `webex_adapter.dedupe` | evitar reprocesar el mismo `message_id` de Webex |
 | `data/index/patentes.sqlite` | base operativa | indexador | almacenar el indice consultable del agente |
+| `data/sharepoint_cache/.manifest.json` | persistencia tecnica | `agent.sources.sharepoint_client` | recordar `etag`, `last_modified` y metadatos remotos para sync incremental |
 | `data/logs/api.local.log` | log opcional de proceso | arranque manual con redireccion | capturar `stdout` del proceso local del backend |
 | `data/logs/api.local.err.log` | log opcional de proceso | arranque manual con redireccion | capturar `stderr` del backend local |
 | `data/logs/webex_adapter.local.log` | log opcional de proceso | arranque manual con redireccion | capturar `stdout` del adaptador Webex local |
@@ -48,6 +49,7 @@ Contenido esperado:
 - arranque de backend y adaptador
 - requests salientes a Webex
 - requests salientes a Gemini/ADK
+- resumenes de sync SharePoint con requests, descargas y bytes
 - eventos del agente
 - tiempos de indexado por PDF
 - resumen total del indexado
@@ -92,6 +94,7 @@ Miralo cuando:
 - el reindexado parece incompleto
 - faltan dominios que deberian existir
 - hay errores de `pypdf`
+- aparece un `MemoryError` en una pagina puntual y queres confirmar si la corrida continuo
 
 ## Persistencias tecnicas que no son logs
 
@@ -134,6 +137,20 @@ Rol:
 
 No es un log porque:
 - es el indice consultado por el agente
+
+### `data/sharepoint_cache/.manifest.json`
+
+Rol:
+- recordar estado remoto del mirror SharePoint entre corridas
+
+Existe para:
+- comparar `etag`, `last_modified` y `size`
+- omitir descargas sin cambios
+- eliminar archivos ausentes al reconciliar
+
+No es un log porque:
+- es un store de metadatos tecnicos
+- no representa una narrativa temporal de eventos
 
 ## Logs opcionales de proceso local
 
