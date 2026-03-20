@@ -7,6 +7,9 @@ Webex se integra como canal principal mediante un adaptador separado en
 `src/webex_adapter`, mientras que la UI web de `http://localhost:8000/ui`
 se mantiene como modo de prueba para desarrollo.
 
+Guia rapida para programadores:
+- `dev_guide.md`
+
 Estado actual de pruebas:
 - la UI web local sigue siendo la superficie de prueba confiable
 - Webex ya esta integrado a nivel de codigo
