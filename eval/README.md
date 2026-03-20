@@ -55,9 +55,13 @@ La idea es detectar regresiones cuando cambian instrucciones, herramientas o log
 ## Como ejecutar
 
 ```powershell
-$env:PYTHONPATH=".\src"
-python eval/eval_agent.py
+..\venv_patentes_agent\Scripts\python.exe eval/eval_agent.py
 ```
 
 Si queres automatizar aserciones, podes convertir `expectation` en verificaciones concretas.
 El agente responde en modo exacto por defecto; solo usa `fuzzy` si el usuario lo pide.
+
+Notas:
+- la evaluacion usa la configuracion activa del proyecto (`.env`)
+- si `PATENTES_SOURCE_MODE=sharepoint`, primero conviene confirmar que mirror e indice esten actualizados
+- para comandos de preparacion, indexado y verificacion, ver `doc/COMANDOS_OPERATIVOS_Y_TROUBLESHOOTING.md`

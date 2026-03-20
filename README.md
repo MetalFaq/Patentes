@@ -46,6 +46,7 @@ Documentacion ampliada:
 - `doc/MIGRACION_PRODUCCION.md`
 - `doc/SHAREPOINT_INTEGRACION.md`
 - `doc/SHAREPOINT_OPERACION_Y_COSTOS.md`
+- `doc/COMANDOS_OPERATIVOS_Y_TROUBLESHOOTING.md`
 
 ## Preparacion del entorno
 

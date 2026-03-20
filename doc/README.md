@@ -17,6 +17,7 @@ hacia uno productivo.
 - `PRUEBA_END_TO_END.md`: circuito completo de prueba local con backend, adaptador, tunel y mensaje real.
 - `SHAREPOINT_INTEGRACION.md`: arquitectura, smoke tests GET, sync incremental y referencias oficiales para Graph.
 - `SHAREPOINT_OPERACION_Y_COSTOS.md`: frecuencia recomendada, telemetria de sync, polling incremental y camino a triggers reales.
+- `COMANDOS_OPERATIVOS_Y_TROUBLESHOOTING.md`: comandos de terminal para operacion, diagnostico y seguimiento del proyecto.
 
 ## Alcance
 
@@ -36,6 +37,7 @@ Estos documentos cubren:
 - integracion SharePoint con certificado PFX, mirror local y estrategia incremental
 - operacion SharePoint por polling incremental, metricas de requests/bytes y costo tecnico
 - scheduler incremental local para ejecutar el polling sin solapamientos
+- comandos concretos para soporte, diagnostico y troubleshooting desde PowerShell
 
 Varios documentos incluyen diagramas en formato Mermaid para explicar el flujo
 de datos y la operacion completa del sistema.

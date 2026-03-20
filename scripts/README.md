@@ -3,6 +3,7 @@
 
 Esta carpeta contiene utilidades de consola para tareas operativas del proyecto.
 No son parte de la API, pero facilitan el mantenimiento y las pruebas locales.
+Para una guia consolidada de comandos, ver `doc/COMANDOS_OPERATIVOS_Y_TROUBLESHOOTING.md`.
 
 ## Archivos
 

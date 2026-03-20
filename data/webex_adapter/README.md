@@ -43,3 +43,4 @@ No guarda la conversacion funcional del agente. El historial conversacional vive
 - Solo se versiona este `README.md`; `webex_events.sqlite` sigue ignorado por git.
 - Si queres reiniciar la deduplicacion local desde cero, eliminar la base con el adaptador apagado.
 - Para entender el rol completo de este store, ver `src/webex_adapter/README.md` y `doc/LOGS_Y_OBSERVABILIDAD.md`.
+- Para comandos utiles de diagnostico del adaptador, ver `doc/COMANDOS_OPERATIVOS_Y_TROUBLESHOOTING.md`.

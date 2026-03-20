@@ -41,3 +41,4 @@ No contiene codigo ni datos funcionales del agente; contiene trazabilidad tecnic
 - Si Webex no responde, revisar primero `webex_adapter.local.err.log` y luego `webex_tunnel.err.log`.
 - Si la UI falla, revisar `api.local.err.log`.
 - Para una explicacion completa del rol de cada log, ver `doc/LOGS_Y_OBSERVABILIDAD.md`.
+- Para comandos listos para seguimiento y tail de logs, ver `doc/COMANDOS_OPERATIVOS_Y_TROUBLESHOOTING.md`.

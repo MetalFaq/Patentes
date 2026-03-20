@@ -18,6 +18,7 @@ Para teoria operativa mas amplia ver:
 - `doc/TUNEL_PUBLICO.md`
 - `doc/WEBEX_WEBHOOK.md`
 - `doc/PRUEBA_END_TO_END.md`
+- `doc/COMANDOS_OPERATIVOS_Y_TROUBLESHOOTING.md`
 
 Arquitectura objetivo:
 
