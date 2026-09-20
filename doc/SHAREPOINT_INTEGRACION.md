@@ -21,11 +21,11 @@ depurar conectividad remota antes de mezclarla con el motor de busqueda.
 ## Datos actuales del proyecto
 
 - Site URL:
-  - `https://arcorgroup.sharepoint.com/sites/GC_CORP_InfraestructurayComunicacionesTI`
+  - `https://contoso.sharepoint.com/sites/MiSitioSharePoint`
 - Biblioteca objetivo:
   - `Shared Documents`
 - Carpeta objetivo:
-  - `31 - IA y Automatizaciones/Agente Patente (Google)/Fuente de Datos`
+  - `Documentos/Agente Patentes/Fuente de Datos`
 - Modo de autenticacion elegido:
   - certificado PFX local para entorno de desarrollo
 

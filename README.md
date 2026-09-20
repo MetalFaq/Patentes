@@ -188,9 +188,9 @@ Configuracion minima:
 
 ```powershell
 $env:PATENTES_SOURCE_MODE="sharepoint"
-$env:SHAREPOINT_SITE_URL="https://arcorgroup.sharepoint.com/sites/GC_CORP_InfraestructurayComunicacionesTI"
+$env:SHAREPOINT_SITE_URL="https://contoso.sharepoint.com/sites/MiSitioSharePoint"
 $env:SHAREPOINT_LIBRARY_NAME="Shared Documents"
-$env:SHAREPOINT_FOLDER_PATH="31 - IA y Automatizaciones/Agente Patente (Google)/Fuente de Datos"
+$env:SHAREPOINT_FOLDER_PATH="Documentos/Agente Patentes/Fuente de Datos"
 ```
 
 Smoke tests recomendados:

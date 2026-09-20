@@ -14,3 +14,7 @@ data/webex_adapter/*.sqlite
 data/sharepoint_cache/*
 !data/sharepoint_cache/README.md
 Certificado/*
+!Certificado/README.md
+Fuente/*
+!Fuente/README.md
+venv*/

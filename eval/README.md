@@ -55,7 +55,7 @@ La idea es detectar regresiones cuando cambian instrucciones, herramientas o log
 ## Como ejecutar
 
 ```powershell
-..\venv_patentes_agent\Scripts\python.exe eval/eval_agent.py
+python eval/eval_agent.py
 ```
 
 Si queres automatizar aserciones, podes convertir `expectation` en verificaciones concretas.

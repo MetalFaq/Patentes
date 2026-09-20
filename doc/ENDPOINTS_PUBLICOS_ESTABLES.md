@@ -19,16 +19,16 @@ publica estable.
 
 Arquitectura objetivo:
 
-- backend Patentes: `https://patentes-api.arcor.com`
-- adaptador Webex: `https://patentes-webex.arcor.com`
+- backend Patentes: `https://patentes-api.ejemplo.com`
+- adaptador Webex: `https://patentes-webex.ejemplo.com`
 - webhook registrado en Webex:
-  - `https://patentes-webex.arcor.com/webex/webhook`
+  - `https://patentes-webex.ejemplo.com/webex/webhook`
 
 Configuracion asociada:
 
 ```env
-DOCS_BASE_URL=https://patentes-api.arcor.com
-PATENTES_API_BASE_URL=https://patentes-api.arcor.com
+DOCS_BASE_URL=https://patentes-api.ejemplo.com
+PATENTES_API_BASE_URL=https://patentes-api.ejemplo.com
 ```
 
 ## Que significa "endpoint publico estable"
@@ -44,7 +44,7 @@ Es una URL que:
 Ejemplo estable:
 
 ```text
-https://patentes-webex.arcor.com/webex/webhook
+https://patentes-webex.ejemplo.com/webex/webhook
 ```
 
 Ejemplo no estable:
@@ -74,8 +74,8 @@ No alcanza con una notebook local o una IP privada de VPN.
 
 Subdominios dedicados, por ejemplo:
 
-- `patentes-api.arcor.com`
-- `patentes-webex.arcor.com`
+- `patentes-api.ejemplo.com`
+- `patentes-webex.ejemplo.com`
 
 Esos DNS deben apuntar a:
 
@@ -95,8 +95,8 @@ Hace falta una capa que reciba trafico publico y lo dirija al servicio correcto.
 
 Ejemplos:
 
-- `https://patentes-api.arcor.com` -> backend `api.main:app`
-- `https://patentes-webex.arcor.com` -> adaptador `webex_adapter.main:app`
+- `https://patentes-api.ejemplo.com` -> backend `api.main:app`
+- `https://patentes-webex.ejemplo.com` -> adaptador `webex_adapter.main:app`
 
 ### 5. Servicios desplegados
 
@@ -114,13 +114,13 @@ El indexado no deberia ejecutarse dentro del arranque del backend de chat.
 En backend:
 
 ```env
-DOCS_BASE_URL=https://patentes-api.arcor.com
+DOCS_BASE_URL=https://patentes-api.ejemplo.com
 ```
 
 En adaptador:
 
 ```env
-PATENTES_API_BASE_URL=https://patentes-api.arcor.com
+PATENTES_API_BASE_URL=https://patentes-api.ejemplo.com
 ```
 
 ### 7. Secretos fuera de `.env` local
@@ -218,8 +218,8 @@ Pedido minimo con fundamento:
 ```mermaid
 flowchart LR
     U[Usuario Webex] --> W[Webex Cloud]
-    W --> A[https://patentes-webex.arcor.com/webex/webhook]
-    A --> B[https://patentes-api.arcor.com/chat]
+    W --> A[https://patentes-webex.ejemplo.com/webex/webhook]
+    A --> B[https://patentes-api.ejemplo.com/chat]
     B --> D[Indice y documentos]
     A --> W
 ```

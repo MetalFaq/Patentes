@@ -5,7 +5,7 @@ Guia rapida para programadores que trabajan sobre `Patentes`.
 Los comandos estan pensados para PowerShell y asumen este directorio:
 
 ```powershell
-cd C:\Users\fnrivarola\Desktop\Celula\Patentes\patentes_agent
+cd patentes_agent
 ```
 
 Para la version extendida y con contexto operativo, ver tambien:
@@ -23,7 +23,7 @@ sensibles o locales:
   - `WEBEX_WEBHOOK_SECRET`
   - `SHAREPOINT_CERT_PFX_PASSWORD`
 - certificado SharePoint:
-  - `.\Certificado\arcor_agente_patentes2026.pfx`
+  - `.\Certificado\agente_patentes_cert.pfx`
 - opcionalmente, artefactos runtime ya generados:
   - `data/index/patentes.sqlite`
   - `data/sharepoint_cache/*`
@@ -46,21 +46,21 @@ Referencia rapida:
 Activar el entorno virtual:
 
 ```powershell
-..\venv_patentes_agent\Scripts\Activate.ps1
+.venv\Scripts\Activate.ps1
 ```
 
 Reinstalar el proyecto:
 
 ```powershell
-..\venv_patentes_agent\Scripts\python.exe -m pip install -e .
+python -m pip install -e .
 ```
 
 Ver dependencias clave:
 
 ```powershell
-..\venv_patentes_agent\Scripts\python.exe -m pip show patentes-agent
-..\venv_patentes_agent\Scripts\python.exe -m pip show msal
-..\venv_patentes_agent\Scripts\python.exe -m pip show pypdf
+python -m pip show patentes-agent
+python -m pip show msal
+python -m pip show pypdf
 ```
 
 ## Configuracion
@@ -74,7 +74,7 @@ Get-Content .env | Select-String "PATENTES_SOURCE_MODE|PATENTES_INDEX_DB|DOCS_BA
 Verificar certificado SharePoint:
 
 ```powershell
-Test-Path .\Certificado\arcor_agente_patentes2026.pfx
+Test-Path .\Certificado\agente_patentes_cert.pfx
 ```
 
 ## SharePoint
@@ -82,61 +82,61 @@ Test-Path .\Certificado\arcor_agente_patentes2026.pfx
 Resolver site:
 
 ```powershell
-..\venv_patentes_agent\Scripts\python.exe scripts\sharepoint_probe.py --site-info
+python scripts\sharepoint_probe.py --site-info
 ```
 
 Listar drives:
 
 ```powershell
-..\venv_patentes_agent\Scripts\python.exe scripts\sharepoint_probe.py --list-drives
+python scripts\sharepoint_probe.py --list-drives
 ```
 
 Listar carpeta:
 
 ```powershell
-..\venv_patentes_agent\Scripts\python.exe scripts\sharepoint_probe.py --list-folder
+python scripts\sharepoint_probe.py --list-folder
 ```
 
 Listar PDFs:
 
 ```powershell
-..\venv_patentes_agent\Scripts\python.exe scripts\sharepoint_probe.py --list-pdfs --limit 5
+python scripts\sharepoint_probe.py --list-pdfs --limit 5
 ```
 
 Descargar uno:
 
 ```powershell
-..\venv_patentes_agent\Scripts\python.exe scripts\sharepoint_probe.py --download-one
+python scripts\sharepoint_probe.py --download-one
 ```
 
 Sync corto con telemetria:
 
 ```powershell
-..\venv_patentes_agent\Scripts\python.exe scripts\sharepoint_probe.py --sync --limit 1
+python scripts\sharepoint_probe.py --sync --limit 1
 ```
 
 Sync completo:
 
 ```powershell
-..\venv_patentes_agent\Scripts\python.exe scripts\sharepoint_probe.py --sync
+python scripts\sharepoint_probe.py --sync
 ```
 
 Scheduler: una sola evaluacion:
 
 ```powershell
-..\venv_patentes_agent\Scripts\python.exe scripts\sharepoint_scheduler.py --once
+python scripts\sharepoint_scheduler.py --once
 ```
 
 Scheduler: forzar corrida:
 
 ```powershell
-..\venv_patentes_agent\Scripts\python.exe scripts\sharepoint_scheduler.py --run-now
+python scripts\sharepoint_scheduler.py --run-now
 ```
 
 Scheduler continuo:
 
 ```powershell
-..\venv_patentes_agent\Scripts\python.exe scripts\sharepoint_scheduler.py
+python scripts\sharepoint_scheduler.py
 ```
 
 ## Indexado e inspeccion
@@ -144,43 +144,43 @@ Scheduler continuo:
 Reindexado completo:
 
 ```powershell
-..\venv_patentes_agent\Scripts\python.exe scripts\index_patentes.py --force
+python scripts\index_patentes.py --force
 ```
 
 Solo sync SharePoint:
 
 ```powershell
-..\venv_patentes_agent\Scripts\python.exe scripts\index_patentes.py --sync-only
+python scripts\index_patentes.py --sync-only
 ```
 
 Indexado limitado:
 
 ```powershell
-..\venv_patentes_agent\Scripts\python.exe scripts\index_patentes.py --force --limit 3 --max-pages-per-pdf 20
+python scripts\index_patentes.py --force --limit 3 --max-pages-per-pdf 20
 ```
 
 Stats del indice:
 
 ```powershell
-..\venv_patentes_agent\Scripts\python.exe scripts\inspect_db.py --stats
+python scripts\inspect_db.py --stats
 ```
 
 Busqueda exacta:
 
 ```powershell
-..\venv_patentes_agent\Scripts\python.exe scripts\inspect_db.py --plate AUT230 --mode exacto
+python scripts\inspect_db.py --plate AUT230 --mode exacto
 ```
 
 Busqueda por prefijo:
 
 ```powershell
-..\venv_patentes_agent\Scripts\python.exe scripts\inspect_db.py --plate AD --mode prefijo
+python scripts\inspect_db.py --plate AD --mode prefijo
 ```
 
 Busqueda por contiene:
 
 ```powershell
-..\venv_patentes_agent\Scripts\python.exe scripts\inspect_db.py --plate 70 --mode contiene
+python scripts\inspect_db.py --plate 70 --mode contiene
 ```
 
 ## Backend y UI
@@ -188,13 +188,13 @@ Busqueda por contiene:
 Levantar backend:
 
 ```powershell
-..\venv_patentes_agent\Scripts\python.exe -m uvicorn api.main:app --host 127.0.0.1 --port 8000
+python -m uvicorn api.main:app --host 127.0.0.1 --port 8000
 ```
 
 Levantar backend con reload:
 
 ```powershell
-..\venv_patentes_agent\Scripts\python.exe -m uvicorn api.main:app --host 0.0.0.0 --port 8000 --reload
+python -m uvicorn api.main:app --host 0.0.0.0 --port 8000 --reload
 ```
 
 Abrir UI:
@@ -221,7 +221,7 @@ Invoke-RestMethod -Method Post -Uri "http://127.0.0.1:8000/chat" -ContentType "a
 Levantar adaptador:
 
 ```powershell
-..\venv_patentes_agent\Scripts\python.exe -m uvicorn webex_adapter.main:app --host 0.0.0.0 --port 8010 --reload
+python -m uvicorn webex_adapter.main:app --host 0.0.0.0 --port 8010 --reload
 ```
 
 Health del adaptador:
@@ -350,5 +350,5 @@ git log --oneline --left-right main...test
 Compilar scripts/modulos clave:
 
 ```powershell
-..\venv_patentes_agent\Scripts\python.exe -m py_compile scripts\sharepoint_probe.py scripts\sharepoint_scheduler.py scripts\index_patentes.py src\agent\config.py src\agent\sources\sharepoint_client.py
+python -m py_compile scripts\sharepoint_probe.py scripts\sharepoint_scheduler.py scripts\index_patentes.py src\agent\config.py src\agent\sources\sharepoint_client.py
 ```

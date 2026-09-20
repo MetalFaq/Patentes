@@ -67,8 +67,8 @@ Se requieren registros DNS para ambos servicios.
 
 Ejemplo:
 
-- `patentes-api.arcor.com`
-- `patentes-webex.arcor.com`
+- `patentes-api.ejemplo.com`
+- `patentes-webex.ejemplo.com`
 
 Los registros pueden resolverse mediante:
 
