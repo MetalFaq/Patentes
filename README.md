@@ -424,3 +424,24 @@ Para el detalle de cambios necesarios al migrar a produccion, revisa:
 - Consultas estadisticas globales solo responden si hubo herramientas.
 - El modo `fuzzy` es explicito y puede generar falsos positivos; no se usa por defecto.
 - Respuesta estandar: Poliza N°, Vigencia desde, Vigencia hasta, Asegurado y link a la pagina exacta.
+## 🚧 Pendientes de Desarrollo y Cómo Llevarlos a Cabo
+
+1. **Migración a Base de Datos Vectorial Escalable (Qdrant / Vertex AI Vector Search)**:
+   - *Objetivo*: Escalar la búsqueda semántica e indexación cuando el repositorio supere los miles de documentos PDF de pólizas y certificados.
+   - *Procedimiento*:
+     - Reemplazar el almacenamiento local de embeddings en `doc_index.py` por una base vectorial dedicada (Qdrant local o Vertex AI Vector Search en GCP).
+     - Mantener inalterado el contrato de búsqueda exacta (`search_exact`) y prefijo (`search_by_prefix`) que garantizan cero alucinación sobre números de patente y pólizas.
+
+2. **Sincronización en Tiempo Real con SharePoint vía Webhooks (Graph API)**:
+   - *Objetivo*: Eliminar la necesidad de ejecutar manualmente el script de indexado (`index_documents.py`) ante nuevos certificados subidos al sitio corporativo.
+   - *Procedimiento*:
+     - Crear una suscripción en Microsoft Graph API (`POST /subscriptions` sobre la biblioteca de documentos de SharePoint) apuntando a un endpoint en el backend.
+     - Al recibir el webhook, descargar el PDF delta e invocar el indexado incremental de la página correspondiente.
+
+3. **Arquitectura Productiva de Contenedores Desacoplados (Cloud Run / GKE)**:
+   - *Objetivo*: Desplegar la solución separando la API central de negocio del adaptador de Webex para aislar cargas y fallos.
+   - *Procedimiento*:
+     - Generar dos imágenes Docker independientes:
+       - `Dockerfile.api`: expone el servicio FastAPI central (`api.main:app`) y el visor estático de PDFs.
+       - `Dockerfile.webex`: expone el adaptador asíncrono (`webex_adapter.main:app`) para procesar eventos del bot.
+     - Implementar las pautas de infraestructura detalladas en `doc/MIGRACION_PRODUCCION.md` y `doc/REQUERIMIENTO_TECNICO_INFRAESTRUCTURA.md`.
